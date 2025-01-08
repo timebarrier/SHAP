@@ -11,13 +11,11 @@ from sklearn.model_selection import train_test_split, cross_val_score, GridSearc
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 
-
-
 # %%
-df1=pd.read_csv('OBESITY.csv', encoding='gbk')
+df1 = pd.read_csv('./data/your_obesity_data.csv', encoding='gbk') 
 df1.head()
 
-df2=pd.read_csv('STANDARD.csv', encoding='gbk')
+df2 = pd.read_csv('./data/your_standard_data.csv', encoding='gbk')
 df2.head()
 
 
@@ -31,7 +29,11 @@ y2.head()
 
 # %%
 
-feature_order = ['Gender', 'Age', 'Land use diversity', 'Population density', 'Street Connectivity', 'Road intersection density', 'Number of Bus Stops', 'Distance to Bus Stops', 'Number of parks', 'Distance to park', 'Number of overpasses', 'Streetscape Green Vision', 'Mean Tree Height', 'Mean NDVI', 'Mean LST', 'Plants diversity', 'Total plants']
+feature_order = ['Gender', 'Age', 'Land use diversity', 'Population density', 'Street Connectivity', 
+                 'Road intersection density', 'Number of Bus Stops', 'Distance to Bus Stops', 
+                 'Number of parks', 'Distance to park', 'Number of overpasses', 
+                 'Streetscape Green Vision', 'Mean Tree Height', 'Mean NDVI', 'Mean LST', 
+                 'Plants diversity', 'Total plants']
 x1 = df1.drop('Physical activity', axis=1)[feature_order]
 x1.head()
 
@@ -41,7 +43,7 @@ x2.head()
 # %%
 from sklearn.model_selection import train_test_split
 
-seed=42
+seed = 42
 xtrain1, xtest1, ytrain1, ytest1 = train_test_split(x1, y1, test_size=0.3, random_state=seed)
 
 xtrain2, xtest2, ytrain2, ytest2 = train_test_split(x2, y2, test_size=0.3, random_state=seed)
@@ -57,20 +59,19 @@ from scipy.stats import randint
 from scipy import interpolate
 import numpy as np
 import pandas as pd
-import pickle
 import shap  
 
-with open('D:/STUDY/Obesity/xgboost_result/OBESITY.pkl', 'rb') as file1:
-    rf_econotpoor = pickle.load(file1)
+with open('./models/OBESITY.pkl', 'rb') as file1: 
+    obesity = pickle.load(file1)
     
-with open('D:/STUDY/Obesity/xgboost_result/STANDARD.pkl', 'rb') as file2:
-    rf_ecopoor = pickle.load(file2)
+with open('./models/STANDARD.pkl', 'rb') as file2: 
+    standard = pickle.load(file2)
 
 
-explainer1 = shap.TreeExplainer(rf_econotpoor)  
+explainer1 = shap.TreeExplainer(obesity)  
 shap_values1 = explainer1.shap_values(xtrain1)
 
-explainer2 = shap.TreeExplainer(rf_ecopoor)  
+explainer2 = shap.TreeExplainer(standard)  
 shap_values2 = explainer2.shap_values(xtrain2)  
 
 
@@ -85,19 +86,18 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-with open('D:/STUDY/Obesity/xgboost_result/xgb_classifier_model1.pkl', 'rb') as file1:
-    rf_econotpoor = pickle.load(file1)
+with open('./models/xgb_classifier_model1.pkl', 'rb') as file1: 
+    obesity = pickle.load(file1)
 
-with open('D:/STUDY/Obesity/xgboost_result/xgb_classifier_model2.pkl', 'rb') as file2:
-    rf_ecopoor = pickle.load(file2)
-
-
-importance_model1 = rf_econotpoor.feature_importances_
-importance_model2 = rf_ecopoor.feature_importances_
+with open('./models/xgb_classifier_model2.pkl', 'rb') as file2:  
+    standard = pickle.load(file2)
 
 
+importance_model1 = obesity.feature_importances_
+importance_model2 = standard.feature_importances_
 
-feature_names = rf_econotpoor.get_booster().feature_names
+
+feature_names = obesity.get_booster().feature_names
 
 
 importance_df1 = pd.DataFrame({'Feature': feature_names, 'Importance': importance_model1})
@@ -140,11 +140,11 @@ plt.show()
 
 # %%
 
-importance_model1 = rf_econotpoor.feature_importances_
-importance_model2 = rf_ecopoor.feature_importances_
+importance_model1 = obesity.feature_importances_
+importance_model2 = standard.feature_importances_
 
 
-feature_names = rf_econotpoor.get_booster().feature_names
+feature_names = obesity.get_booster().feature_names
 
 
 importance_df1 = pd.DataFrame({'Feature': feature_names, 'Importance': importance_model1})
@@ -204,7 +204,7 @@ for i in features:
     fig = plt.figure(figsize=(6, 5), dpi=120)  
     ax = plt.subplot(111)
 
- 
+
     x_values1 = xtrain1[i]
     shap_values1_i = shap_values1[:, xtrain1.columns.get_loc(i)]  
 
@@ -245,10 +245,5 @@ for i in features:
     plt.tight_layout()  
 
 
-    plt.savefig(f'D:/STUDY/output/save_fig/shapplot_{i}.png', bbox_inches='tight')
+    plt.savefig(f'./output/save_fig/shapplot_{i}.png', bbox_inches='tight') 
     plt.show()
-
-
-
-
-
