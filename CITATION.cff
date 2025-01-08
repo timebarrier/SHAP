@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Tang"
-  given-names: "Haoran"
-  orcid: "https://orcid.org/0009-0007-2183-2569"
 - family-names: "Qiu"
   given-names: "Haoran"
   orcid: "https://orcid.org/0009-0006-3928-6335"
+- family-names: "Tang"
+  given-names: "Haoran"
+  orcid: "https://orcid.org/0009-0007-2183-2569"
 - family-names: "Yang"
   given-names: "Yiyang"
   orcid: "https://orcid.org/0000-0003-2705-0238"
